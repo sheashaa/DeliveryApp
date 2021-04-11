@@ -1,0 +1,82 @@
+﻿@model DeliveryApp.Models.Branch
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details @Model.BranchName</h2>
+
+<div>
+    <h4>Branch</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Establishment.EstablishmentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Establishment.EstablishmentName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchGovernorate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchGovernorate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchCity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchCity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchStreet)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchStreet)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchLatitude)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchLatitude)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchLongitude)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchLongitude)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BranchPhone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BranchPhone)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BranchId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,48 @@
+﻿@model DeliveryApp.Models.Establishment
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete @Model.EstablishmentName?</h3>
+<div>
+    <h4>Establishment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BusinessType.BusinessTypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BusinessType.BusinessTypeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstablishmentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstablishmentName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstablishmentWebsite)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstablishmentWebsite)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

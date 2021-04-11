@@ -1,0 +1,42 @@
+﻿@model DeliveryApp.Models.Establishment
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details @Model.EstablishmentName</h2>
+
+<div>
+    <h4>Establishment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BusinessType.BusinessTypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BusinessType.BusinessTypeName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstablishmentName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstablishmentName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstablishmentWebsite)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstablishmentWebsite)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EstablishmentId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

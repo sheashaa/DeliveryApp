@@ -1,0 +1,26 @@
+﻿@model DeliveryApp.Models.BusinessType
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details @Model.BusinessTypeName</h2>
+
+<div>
+    <h4>BusinessType</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BusinessTypeName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BusinessTypeName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BusinessTypeId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

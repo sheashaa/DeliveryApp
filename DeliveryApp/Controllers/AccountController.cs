@@ -9,6 +9,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using DeliveryApp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using IdentityResult = Microsoft.AspNet.Identity.IdentityResult;
 
 namespace DeliveryApp.Controllers
 {
@@ -73,9 +76,19 @@ namespace DeliveryApp.Controllers
                 return View(model);
             }
 
+            var allowPassOnEmailVerfication = false;
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                if (!string.IsNullOrWhiteSpace(user.UnConfirmedEmail))
+                {
+                    allowPassOnEmailVerfication = true;
+                }
+            }
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -83,7 +96,8 @@ namespace DeliveryApp.Controllers
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return allowPassOnEmailVerfication ? RedirectToLocal(returnUrl) : RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    //return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
@@ -151,7 +165,7 @@ namespace DeliveryApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email/*, PhoneNumber = model.PhoneNumber*/};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -172,6 +186,90 @@ namespace DeliveryApp.Controllers
             return View(model);
         }
 
+
+        private async Task<string> SendEmailConfirmationWarningAsync(string userID, string subject)
+        {
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account",
+               new { userId = userID, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userID, subject,
+               "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+            return callbackUrl;
+        }
+
+        public async Task<ActionResult> CancelUnconfirmedEmail(string emailOrUserId)
+        {
+            var user = await UserManager.FindByEmailAsync(emailOrUserId);
+            if (user == null)
+            {
+                user = await UserManager.FindByIdAsync(emailOrUserId);
+                if (user != null)
+                {
+                    user.UnConfirmedEmail = "";
+                    user.EmailConfirmed = true;
+                    var result = await UserManager.UpdateAsync(user);
+                }
+            }
+            else
+            {
+                user.UnConfirmedEmail = "";
+                user.EmailConfirmed = true;
+                var result = await UserManager.UpdateAsync(user);
+            }
+            return RedirectToAction("Index", "Manage");
+
+        }
+
+        public ActionResult ChangeEmail()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+            var model = new ChangeEmailViewModel()
+            {
+                ConfirmedEmail = user.Email
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeEmail(ChangeEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("ChangeEmail", "Manage");
+            }
+
+            var user = await UserManager.FindByEmailAsync(model.ConfirmedEmail);
+            var userId = user.Id;
+            if (user != null)
+            {
+                //doing a quick swap so we can send the appropriate confirmation email
+                user.UnConfirmedEmail = user.Email;
+                user.Email = model.UnConfirmedEmail;
+                user.EmailConfirmed = false;
+                var result = await UserManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+
+                    string callbackUrl =
+                    await /*SendEmailConfirmationTokenAsync*/SendEmailConfirmationWarningAsync(userId, "Confirm your new email");
+
+                    var tempUnconfirmed = user.Email;
+                    user.Email = user.UnConfirmedEmail;
+                    user.UnConfirmedEmail = tempUnconfirmed;
+                    result = await UserManager.UpdateAsync(user);
+
+                    callbackUrl = await SendEmailConfirmationWarningAsync(userId, "You email has been updated to: " + user.UnConfirmedEmail);
+
+
+                }
+            }
+            return RedirectToAction("Index", "Manage");
+        }
+
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
@@ -181,7 +279,24 @@ namespace DeliveryApp.Controllers
             {
                 return View("Error");
             }
-            var result = await UserManager.ConfirmEmailAsync(userId, code);
+
+            //var result = await UserManager.ConfirmEmailAsync(userId, code);
+
+            var result = UserManager.ConfirmEmail(userId, code);
+            if (result.Succeeded)
+            {
+
+                var user = UserManager.FindById(userId);
+                if (!string.IsNullOrWhiteSpace(user.UnConfirmedEmail))
+                {
+                    user.Email = user.UnConfirmedEmail;
+                    user.UserName = user.UnConfirmedEmail;
+                    user.UnConfirmedEmail = "";
+
+                    UserManager.Update(user);
+                }
+            }
+
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -367,7 +482,7 @@ namespace DeliveryApp.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

@@ -12,6 +12,9 @@ namespace DeliveryApp.Models
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }
         public bool BrowserRemembered { get; set; }
+
+        public string ConfirmedEmail { get; set; } 
+        public string UnConfirmedEmail { get; set; }
     }
 
     public class ManageLoginsViewModel
@@ -56,6 +59,16 @@ namespace DeliveryApp.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ChangeEmailViewModel
+    {
+        public string ConfirmedEmail { get; set; }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        [DataType(DataType.EmailAddress)]
+        public string UnConfirmedEmail { get; set; }
     }
 
     public class AddPhoneNumberViewModel

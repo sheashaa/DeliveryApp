@@ -1,0 +1,33 @@
+﻿@model DeliveryApp.Models.ApplicationUser
+@{
+    ViewBag.Title = "EditProfile";
+}
+
+<h2>EditProfile</h2>
+
+@using (Html.BeginForm("EditProfile", "Customer", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => Model.Image)
+        //upload new imade
+        <img src="@Model.Image" alt="UserImage" width="100" height="100">
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => Model.UserName)
+        @Html.TextBoxFor(m => Model.UserName)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => Model.Email)
+        @Html.TextBoxFor(m => Model.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.Label("PassWord")
+        @Html.ActionLink("Change", "ChangePassword", "Manage")
+    </div>
+
+<input type="submit" class="btn btn-primary" value="Save" />
+
+}

@@ -1,0 +1,37 @@
+﻿@using DeliveryApp.Models;
+@model List<Branch>
+@{
+    ViewBag.Title = "AllBranches";
+}
+
+<h2>All Resturants</h2>
+
+<table class="table table-bordered table-hover text-center">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Government</td>
+            <td>City</td>
+            <td>Street</td>
+            <td>Phone Number</td>
+            <td>Establishment</td>
+            <td>Details</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.BranchName</td>
+                <td>@item.BranchGovernorate</td>
+                <td>@item.BranchCity</td>
+                <td>@item.BranchStreet</td>
+                <td>@item.BranchPhone</td>
+                <td>@item.Establishment.EstablishmentName</td>
+                <td>
+                    @Html.ActionLink("Branch Details", "showBranch", new { id = item.BranchId })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

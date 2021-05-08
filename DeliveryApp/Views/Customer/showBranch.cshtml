@@ -1,0 +1,49 @@
+﻿@using DeliveryApp.Models;
+@model Branch
+@{
+    ViewBag.Title = "showBranch";
+}
+
+<h2>@Model.BranchName</h2>
+
+<dl>
+    <dt>Best Selling Product : </dt>
+    <dt>Product Name : </dt>
+    <dd>@ViewBag.bestselling.ProductName</dd>
+    <dt>Description : </dt>
+    <dd>@ViewBag.bestselling.ProductDescription</dd>
+    <dt>Price : </dt>
+    <dd>@ViewBag.bestselling.ProductPrice</dd>
+    <dt>Product Category : </dt>
+    <dd>@ViewBag.bestselling.ProductCategory.ProductCategoryName <br><br></dd>
+</dl>
+
+
+
+
+<hr>
+
+<dl>
+    <dt>Resturant Address : </dt>
+    <dd>@Model.BranchGovernorate , @Model.BranchCity , @Model.BranchStreet</dd>
+    <hr>
+    <dt>Resturant Phone Number : </dt>
+    <dd>@Model.BranchPhone</dd>
+    <hr>
+    <dt>Resturant Products : </dt>
+    <dd>
+        <dl>
+            @foreach (var item in Model.Products)
+            {
+                <dt>Product Name : </dt>
+                <dd>@item.ProductName</dd>
+                <dt>Description : </dt>
+                <dd>@item.ProductDescription</dd>
+                <dt>Price : </dt>
+                <dd>@item.ProductPrice</dd>
+                <dt>Product Category : </dt>
+                <dd>@item.ProductCategory.ProductCategoryName <br><br></dd>
+            }
+        </dl>
+    </dd>
+</dl>

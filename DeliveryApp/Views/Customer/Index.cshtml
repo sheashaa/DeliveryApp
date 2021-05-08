@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@*@section  MapApiScript {
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyB90FxtYG_ybAYXGkz0ybkmkboE2nEbezI"></script>
+}
+
+@section  scripts  {
+    <script>
+        window.addEventListener('load', function () {
+            mymap = this.document.getElementById('mymap');
+        });
+
+        function getmylocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getposition, errorhandeler);
+            } else {
+                mymap.innerHTML = "<h2>Update Your Browser And Try Again !</h2>";
+            }
+        }
+
+        function getposition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+
+            var location = new google.maps.LatLng(lat, lon);
+
+            var specs = { center: location, zoom: 17 };
+
+            new google.maps.Map(mymap, specs);
+        }
+
+        function errorhandeler(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    mymap.innerHTML = "PERMISSION_DENIED";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    mymap.innerHTML = "POSITION_UNAVAILABLE";
+                    break;
+                case error.TIMEOUT:
+                    mymap.innerHTML = "TIMEOUT";
+                    break;
+                case error.UNKOWN_ERROR:
+                    mymap.innerHTML = "UNKOWN_ERROR";
+                    break;
+            }
+
+        }
+    </script>
+}*@
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("Index", "Customer", FormMethod.Post)) {
+    @Html.TextBox("Location")
+    @*Google Map*@
+
+    <input type="button" value="Location" onclick="getmylocation()" />
+    <input type="submit" value="Search">
+}
+
+@*<div id="mymap"></div>*@
+
+<div>
+    <iframe width="500" height="400" frameborder="0" src="https://www.bing.com/maps/embed?h=400&w=500&cp=31.0405345734631~31.382499694824233&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="no">
+    </iframe>
+    <div style="white-space: nowrap; text-align: center; width: 500px; padding: 6px 0;">
+        <a id="largeMapLink" target="_blank" href="https://www.bing.com/maps?cp=31.0405345734631~31.382499694824233&amp;sty=r&amp;lvl=11&amp;FORM=MBEDLD">View Larger Map</a> &nbsp; | &nbsp;
+        <a id="dirMapLink" target="_blank" href="https://www.bing.com/maps/directions?cp=31.0405345734631~31.382499694824233&amp;sty=r&amp;lvl=11&amp;rtp=~pos.31.0405345734631_31.382499694824233____&amp;FORM=MBEDLD">Get Directions</a>
+    </div>
+</div>
+

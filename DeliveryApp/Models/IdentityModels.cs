@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliveryApp.Models
 {
@@ -16,6 +17,13 @@ namespace DeliveryApp.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        [MaxLength(256)]
+        public string UnConfirmedEmail { get; set; }
+
+        public string Image { get; set; }
+        //public string UserName { get; set; }
+        //public int PhoneNumber { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
